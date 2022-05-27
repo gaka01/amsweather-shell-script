@@ -9,7 +9,7 @@ Sample gnome 42 shell extension executing command on specified interval
 
 ### Debug
 * follow first 2 steps from installation
-* ls -s <path_to>/amsweather@gnome.shell.org ~/.local/share/gnome-shell/extensions/
+* ln -s <path_to>/amsweather@gnome.shell.org ~/.local/share/gnome-shell/extensions/
 * re-login and enable 'amsweather' extension
 * dbus-run-session -- gnome-shell --nested --wayland or journalctl -f -o cat /usr/bin/gnome-shell
 * development reference https://gjs.guide/extensions/development/creating.html
