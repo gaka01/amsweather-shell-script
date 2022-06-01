@@ -34,30 +34,21 @@ class ExtensionView {
         this._indicator = null;
         this._label = null;
 	}
-    
+
     create() {
 
         let indicatorName = `${Me.metadata.name} Indicator`;
-        this._indicator = new PanelMenu.Button(0.0, indicatorName, false);
-        
-        let icon = new St.Icon({
-            gicon: new Gio.ThemedIcon({name: 'face-laugh-symbolic'}),
-            style_class: 'system-status-icon'
+
+        this._indicator = new PanelMenu.Button(0.0, indicatorName, true);
+            
+        this._label = new St.Label({
+            text: "...",
+            y_align: Clutter.ActorAlign.CENTER
         });
 
-        //this._indicator.add_child(icon);
+        this._indicator.add_actor(this._label);
 
-        this._label = new St.Label({ 
-        	text: '...', 
-        	y_align: Clutter.ActorAlign.CENTER,  
-        	style_class: 'example-style'
-        });
-        
-        this._indicator.add_child(this._label);
-
-        // `Main.panel` is the actual panel you see at the top of the screen,
-        // not a class constructor.
-        Main.panel.addToStatusArea(indicatorName, this._indicator);
+        Main.panel.addToStatusArea(indicatorName, this._indicator, 1, "center");
     }
 
     update(data) {
@@ -83,7 +74,7 @@ class ExtensionCtrl {
     }
 
     _update() {
-        const data = Command.Excecute(this._opt.command);
+        const data = Command.Excecute(this._opt.command).trim();
         log(`_update ${data}`);
         this._view.update(data);
     }
@@ -91,7 +82,7 @@ class ExtensionCtrl {
     _starttmr() {
         if(!this._timeout){
             const interval = (this._opt.interval || 60) * 1000;
-            this._timeout = GLib.timeout_add(GLib.PRIORITY_DEFAULT, interval, 
+            this._timeout = GLib.timeout_add(GLib.PRIORITY_DEFAULT, interval,
             () => {
                 this._update();
                 return GLib.SOURCE_CONTINUE;
@@ -122,10 +113,10 @@ class Command {
 
     static Excecute(...args) {
 
-        let [res, out] = GLib.spawn_sync(null, args,  
+        let [res, out] = GLib.spawn_sync(null, args,
                         null, GLib.SpawnFlags.SEARCH_PATH, null);
 
-        return (out.length > 0) ? 
+        return (out.length > 0) ?
                 ByteArray.toString(out) : _("Error executing command.");
     }
 }
@@ -134,9 +125,9 @@ class Command {
 
 class Extension {
     constructor() {
-        this.ctrl = new ExtensionCtrl({ 
-            interval: 60, 
-            command: `${Me.path}/amsweather.sh` 
+        this.ctrl = new ExtensionCtrl({
+            interval: 900,
+            command: `${Me.path}/amsweather.sh`
         });
     }
 
