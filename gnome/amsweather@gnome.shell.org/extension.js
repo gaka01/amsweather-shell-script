@@ -22,61 +22,31 @@ const {St, Gio, Clutter} = imports.gi;
 
 const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
-const Main = imports.ui.main;
-const PanelMenu = imports.ui.panelMenu;
+
 //libs
 const GLib = imports.gi.GLib;
-const ByteArray = imports.byteArray;
 
-class ExtensionView {
+//own imports
+const { PanelMenuView } = Me.imports.ui.panelMenuView
+const FetchDataProvider = Me.imports.dataProviders.commandDataProvider
+// const CommandDataProvider = Me.imports.dataProviders.commandDataProvider
 
-    constructor() {
-        this._indicator = null;
-        this._label = null;
-	}
-
-    create() {
-
-        let indicatorName = `${Me.metadata.name} Indicator`;
-
-        this._indicator = new PanelMenu.Button(0.0, indicatorName, true);
-            
-        this._label = new St.Label({
-            text: "...",
-            y_align: Clutter.ActorAlign.CENTER
-        });
-
-        this._indicator.add_actor(this._label);
-
-        Main.panel.addToStatusArea(indicatorName, this._indicator, 1, "center");
-    }
-
-    update(data) {
-        if(this._label && data) {
-            this._label.set_text(data);
-        }
-    }
-
-    destroy() {
-        if(this._indicator) {
-            this._indicator.destroy();
-            this._indicator = null;
-        }
-    }
-}
 
 class ExtensionCtrl {
 
     constructor(opt) {
-        this._view = new ExtensionView();
-        this._timeout = null;
         this._opt = opt || {};
+        this._timeout = null;
+
+        this._dataProvider = new FetchDataProvider.Provider(Me.path); 
+        this._view = new PanelMenuView(this._opt.position, this._opt.positionIndex);
     }
 
     _update() {
-        const data = Command.Excecute(this._opt.command).trim();
-        log(`_update ${data}`);
-        this._view.update(data);
+        this._dataProvider.provide(newData => {
+            log(`_update ${newData}`);
+            this._view.update(newData);
+        });
     }
 
     _starttmr() {
@@ -109,25 +79,15 @@ class ExtensionCtrl {
     }
 }
 
-class Command {
-
-    static Excecute(...args) {
-
-        let [res, out] = GLib.spawn_sync(null, args,
-                        null, GLib.SpawnFlags.SEARCH_PATH, null);
-
-        return (out.length > 0) ?
-                ByteArray.toString(out) : _("Error executing command.");
-    }
-}
-
 /* exported init */
 
 class Extension {
     constructor() {
         this.ctrl = new ExtensionCtrl({
             interval: 900,
-            command: `${Me.path}/amsweather.sh`
+            position: 'center',
+            positionIndex: 1,
+            // command: `${Me.path}/amsweather.sh`
         });
     }
 
