@@ -28,8 +28,8 @@ const GLib = imports.gi.GLib;
 
 //own imports
 const { PanelMenuView } = Me.imports.ui.panelMenuView
-const FetchDataProvider = Me.imports.dataProviders.commandDataProvider
-// const CommandDataProvider = Me.imports.dataProviders.commandDataProvider
+// const FetchDataProvider = Me.imports.dataProviders.fetchDataProvider
+const CommandDataProvider = Me.imports.dataProviders.commandDataProvider
 
 
 class ExtensionCtrl {
