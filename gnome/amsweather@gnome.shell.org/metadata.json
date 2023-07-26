@@ -3,6 +3,6 @@
   "description": "show weather from specific location",
   "uuid": "amsweather@gnome.shell.org",
   "shell-version": [
-    "43", "42"
+   "44", "43", "42"
   ]
 }
