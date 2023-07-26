@@ -38,7 +38,7 @@ class ExtensionCtrl {
         this._opt = opt || {};
         this._timeout = null;
 
-        this._dataProvider = new FetchDataProvider.Provider(Me.path); 
+        this._dataProvider = new CommandDataProvider.Provider(Me.path);
         this._view = new PanelMenuView(this._opt.position, this._opt.positionIndex);
     }
 
