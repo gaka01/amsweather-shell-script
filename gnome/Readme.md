@@ -1,5 +1,5 @@
 ## amsweather - Gnome shell extension
-Sample gnome 42 shell extension executing command on specified interval
+Sample gnome 45 (for legacy versions: 42, 43, 44 see git tags) shell extension - executing command on specified interval
 
 ### Installation
 * chmod +x ../amsweather.sh 
@@ -13,3 +13,7 @@ Sample gnome 42 shell extension executing command on specified interval
 * re-login and enable 'amsweather' extension
 * dbus-run-session -- gnome-shell --nested --wayland or journalctl -f -o cat /usr/bin/gnome-shell
 * development reference https://gjs.guide/extensions/development/creating.html
+
+### Develop
+* Port Extensions to GNOME Shell 45 https://gjs.guide/extensions/upgrading/gnome-shell-45.html#esm
+

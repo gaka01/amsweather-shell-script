@@ -1,26 +1,25 @@
 'use strict';
-const {St, Gio, Clutter} = imports.gi;
 
-const ExtensionUtils = imports.misc.extensionUtils;
-const Me = ExtensionUtils.getCurrentExtension();
+import St from 'gi://St';
+import Gio from 'gi://Gio';
+import Clutter from 'gi://Clutter';
 
-const Main = imports.ui.main;
-const PanelMenu = imports.ui.panelMenu;
+import * as Main from 'resource:///org/gnome/shell/ui/main.js';
+import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js';
 
-var PanelMenuView = class PanelMenuView {
+export class PanelMenuView {
 
-    constructor(position, positionIndex) {
+    constructor(position, positionIndex, indicatorName) {
         this._indicator = null;
         this._label = null;
         this._position = position || 'center';
         this._positionIndex = positionIndex || 1;
+        this._indicatorName = indicatorName || 'indicator';
 	}
 
     create() {
 
-        const indicatorName = `${Me.metadata.name} Indicator`;
-
-        this._indicator = new PanelMenu.Button(0.0, indicatorName, true);
+        this._indicator = new PanelMenu.Button(0.0, this._indicatorName, true);
             
         this._label = new St.Label({
             text: "...",
@@ -29,7 +28,7 @@ var PanelMenuView = class PanelMenuView {
 
         this._indicator.add_actor(this._label);
 
-        Main.panel.addToStatusArea(indicatorName, this._indicator, this._positionIndex, this._position);
+        Main.panel.addToStatusArea(this._indicatorName, this._indicator, this._positionIndex, this._position);
     }
 
     update(data) {

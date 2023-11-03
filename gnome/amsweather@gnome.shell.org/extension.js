@@ -18,19 +18,14 @@
 
 'use strict';
 
-const {St, Gio, Clutter} = imports.gi;
+import St from 'gi://St';
+import Gio from 'gi://Gio';
+import Clutter from 'gi://Clutter';
+import GLib from 'gi://GLib';
 
-const ExtensionUtils = imports.misc.extensionUtils;
-const Me = ExtensionUtils.getCurrentExtension();
-
-//libs
-const GLib = imports.gi.GLib;
-
-//own imports
-const { PanelMenuView } = Me.imports.ui.panelMenuView
-// const FetchDataProvider = Me.imports.dataProviders.fetchDataProvider
-const CommandDataProvider = Me.imports.dataProviders.commandDataProvider
-
+import {PanelMenuView} from './ui/panelMenuView.js';
+import {DataProviderFactory, Providers} from './dataProviders/dataProviderFactory.js';
+import {Extension, gettext as _} from 'resource:///org/gnome/shell/extensions/extension.js';
 
 class ExtensionCtrl {
 
@@ -38,19 +33,19 @@ class ExtensionCtrl {
         this._opt = opt || {};
         this._timeout = null;
 
-        this._dataProvider = new CommandDataProvider.Provider(Me.path);
-        this._view = new PanelMenuView(this._opt.position, this._opt.positionIndex);
+        this._dataProvider = new DataProviderFactory(Providers.Command, this._opt.path);
+        this._view = new PanelMenuView(this._opt.position, this._opt.positionIndex, this._opt.name);
     }
 
     _update() {
         this._dataProvider.provide(newData => {
-            log(`_update ${newData}`);
+            log(`_update: ${newData}`);
             this._view.update(newData);
         });
     }
 
     _starttmr() {
-        if(!this._timeout){
+        if(!this._timeout) {
             const interval = (this._opt.interval || 60) * 1000;
             this._timeout = GLib.timeout_add(GLib.PRIORITY_DEFAULT, interval,
             () => {
@@ -61,7 +56,7 @@ class ExtensionCtrl {
     }
 
     _stoptmr() {
-        if(this._timeout){
+        if(this._timeout) {
             GLib.Source.remove(this._timeout);
             this._timeout = null;
         }
@@ -79,30 +74,23 @@ class ExtensionCtrl {
     }
 }
 
-/* exported init */
+export default class MyExtension extends Extension {
 
-class Extension {
-    constructor() {
+    enable() {
+        log(`enabling: ${this.metadata.name}`);
         this.ctrl = new ExtensionCtrl({
             interval: 900,
             position: 'center',
             positionIndex: 1,
-            // command: `${Me.path}/amsweather.sh`
+            name: this.metadata.name,
+            path: this.path
         });
-    }
-
-    enable() {
-        log(`enabling ${Me.metadata.name}`);
         this.ctrl.create();
     }
 
     disable() {
-        log(`disabling ${Me.metadata.name}`);
+        log(`disabling: ${this.metadata.name}`);
         this.ctrl.destroy();
     }
 }
 
-function init() {
-    log(`initializing ${Me.metadata.name}`);
-    return new Extension();
-}
