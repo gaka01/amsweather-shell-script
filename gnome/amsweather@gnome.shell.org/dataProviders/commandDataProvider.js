@@ -1,8 +1,10 @@
 'use strict';
 
-const GLib = imports.gi.GLib;
-const Gio = imports.gi.Gio;
-const ByteArray = imports.byteArray;
+import GLib from 'gi://GLib';
+import Gio from 'gi://Gio';
+import {gettext as _} from 'resource:///org/gnome/shell/extensions/extension.js';
+
+const ByteArray = imports.byteArray; // legacy module without ESM equivalent
 
 class Command {
 
@@ -35,7 +37,6 @@ class Command {
             cbResult(null);
         }
     }
-  
     
     static Excecute(...args) {
 
@@ -47,7 +48,7 @@ class Command {
     }
 }
 
-var Provider = class Provider {
+export class CommandDataProvider {
     constructor(pathToExtension) {
         this._pathToExtension = pathToExtension;
     }

@@ -1,6 +1,6 @@
 'use strict';
 
-var Provider = class Provider {
+export class FetchDataProvider {
     provide(onNewData) {
         fetch('http://93.155.192.228/')
         .then(request => request.text())
