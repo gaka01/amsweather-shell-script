@@ -26,7 +26,7 @@ export class PanelMenuView {
             y_align: Clutter.ActorAlign.CENTER
         });
 
-        this._indicator.add_actor(this._label);
+        this._indicator.add_child(this._label);
 
         Main.panel.addToStatusArea(this._indicatorName, this._indicator, this._positionIndex, this._position);
     }
